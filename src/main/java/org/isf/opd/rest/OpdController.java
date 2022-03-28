@@ -35,6 +35,8 @@ import org.isf.shared.exceptions.OHAPIException;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
 import org.isf.utils.exception.model.OHSeverityLevel;
+import org.isf.visits.manager.VisitManager;
+import org.isf.visits.model.Visit;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,10 +67,14 @@ public class OpdController {
 	
 	@Autowired
 	protected PatientBrowserManager patientBrowserManager;
+	
+	@Autowired
+	protected VisitManager visitManager;
 
-	public OpdController(OpdBrowserManager opdManager, OpdMapper opdmapper) {
+	public OpdController(OpdBrowserManager opdManager, OpdMapper opdmapper, VisitManager visitManager) {
 		this.opdManager = opdManager;
 		this.mapper = opdmapper;
+		this.visitManager = visitManager;
 	}
 
 	/**
@@ -85,9 +91,19 @@ public class OpdController {
 		if (patient == null) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
 		}
-
+		
+		Date nextVisit = opdDTO.getNextVisitDate(); // FIXME: despite the presentation dd/MM/yy the object has time when insert = true
 		Opd opdToInsert = mapper.map2Model(opdDTO);
 		opdToInsert.setPatient(patient);
+		if (nextVisit != null) {
+			if (nextVisit.compareTo(opdDTO.getDate()) < 0) {
+				throw new OHAPIException(new OHExceptionMessage(null, "Can not set a date in the past for nextvisit!", OHSeverityLevel.ERROR));
+			}
+			Visit visit = new Visit();
+			visit.setDate(opdToInsert.getNextVisitDate());
+			visit.setPatient(opdToInsert.getPatient());
+			visitManager.newVisit(visit);
+		}
 		boolean isCreated = opdManager.newOpd(opdToInsert);
 		if (!isCreated) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Opd is not created!", OHSeverityLevel.ERROR));
