@@ -328,8 +328,8 @@ public class AdmissionControllerTest {
 							put(request, id).contentType(MediaType.APPLICATION_JSON)
 							.content(AdmissionHelper.asJsonString(admDTO))
 					)
-					.andExpect(status().is4xxClientError())
-					.andExpect(status().isBadRequest()) //TODO Create OHCreateAPIException
+					.andExpect(status().is2xxSuccessful())
+					.andExpect(status().isOk())
 					.andReturn();
 	}
 	
