@@ -24,6 +24,8 @@ package org.isf.visits.rest;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.isf.admission.dto.AdmissionDTO;
+import org.isf.admission.model.Admission;
 import org.isf.shared.exceptions.OHAPIException;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
@@ -41,6 +43,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -130,5 +133,27 @@ public class VisitsController {
         }
         return ResponseEntity.ok(true);
     }
-
+    
+    /**
+     * Update the visit related to here id.
+     *
+     * @param visitID the id of the visit
+     * @return an error message if there are some problem, visit otherwise
+     * @throws OHServiceException
+     */
+    @PutMapping(value = "/visit/{visitID}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<VisitDTO> updateVisit(@PathVariable int visitID,
+    		                                   @RequestBody VisitDTO updateVisitDTO) throws OHServiceException {
+	    LOGGER.info("update Visit related to visitID: {}", visitID);
+        
+	    Visit visit = visitManager.getVisit(visitID);
+	    if(visit == null)
+	    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+	    if(updateVisitDTO.getVisitID() != visitID)
+	    	 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+	     Visit vst = mapper.map2Model(updateVisitDTO);
+	     Visit updateVisit = visitManager.updateVisit(vst);
+	     
+	     return ResponseEntity.ok(mapper.map2DTO(updateVisit));
+    }
 }
