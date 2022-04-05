@@ -293,18 +293,4 @@ public class OperationController {
 		}
 		return ResponseEntity.ok(isDeleted);
 	}
-	
-	/**
-	 * Get {@link Operation}s for specified patient.
-	 * @return {@link List} of {@link OperationRow} or NO_CONTENT if there is no data found.
-	 * @throws OHServiceException
-	 */
-	@GetMapping(value = "/operations/rows/search/patient", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<OperationDTO>> getOperationRowsByPatient(@RequestParam("patientId") int id) throws OHServiceException {
-		LOGGER.info("Get operations for provided patient");
-		return null;
-	
-		
-	}
-
 }
