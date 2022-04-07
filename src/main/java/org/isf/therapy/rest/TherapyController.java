@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.isf.accounting.model.Bill;
 import org.isf.medical.dto.MedicalDTO;
 import org.isf.medical.mapper.MedicalMapper;
 import org.isf.medicals.model.Medical;
@@ -108,7 +109,7 @@ public class TherapyController {
 	 * @return <code>true</code> if the therapies have been deleted, <code>false</code> otherwise
 	 * @throws OHServiceException 
 	 */
-	@DeleteMapping(value = "/therapies/{code_patient}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "/therapies/patient/{code_patient}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> deleteAllTherapies(@PathVariable("code_patient") Integer code) throws OHServiceException {
 		boolean done = manager.deleteAllTherapies(code);
 		if(done) {
@@ -116,6 +117,22 @@ public class TherapyController {
 		} else {
 			throw new OHAPIException(new OHExceptionMessage(null, "Therapies are not deleted!", OHSeverityLevel.ERROR));
 		}
+	}
+
+	@DeleteMapping(value = "/therapies/{therapyRowID}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity deleteTherapyRow(@PathVariable Integer therapyRowID) throws OHServiceException {
+		LOGGER.info("Delete therapyRow id: {}", therapyRowID);
+		TherapyRow therapyRow = manager.getTherapyRow(therapyRowID);
+		boolean isDeleted = false;
+		if (therapyRow != null) {
+			isDeleted = manager.deleteTherapyRow(therapyRow);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
+		if (!isDeleted) {
+			throw new OHAPIException(new OHExceptionMessage(null, "TherapyRow is not deleted!", OHSeverityLevel.ERROR));
+		}
+		return ResponseEntity.ok(isDeleted);
 	}
 	
 	/**

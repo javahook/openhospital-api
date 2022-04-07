@@ -37,15 +37,15 @@ public class TherapyRowDTO {
 
 	@NotNull(message="the patient is required")
 	@ApiModelProperty(notes="The patient", position = 2)
-	PatientDTO patID;
+	PatientDTO patient;
 
 	@NotNull(message="the start date is require")
-	@ApiModelProperty(notes="The start date of therapy", example = "2020-07-16", position = 3)
+	@ApiModelProperty(notes="The start date of therapy", example = "2020-07-16T12:08:56.235-07:00", position = 3)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
 	private Date startDate;
 
 	@NotNull(message="the end date is required")
-	@ApiModelProperty(notes="The end date of the therapy", example = "2020-07-30", position = 4)
+	@ApiModelProperty(notes="The end date of the therapy", example = "2020-07-30T12:08:56.235-07:00", position = 4)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
 	private Date endDate;
 
@@ -83,11 +83,11 @@ public class TherapyRowDTO {
 	public TherapyRowDTO() {
 	}
 
-	public TherapyRowDTO(Integer therapyID, PatientDTO patID, Date startDate, Date endDate, Integer medicalId,
-			Double qty, Integer unitID, Integer freqInDay, Integer freqInPeriod, String note, Integer notifyInt,
-			Integer smsInt) {
+	public TherapyRowDTO(Integer therapyID, PatientDTO patient, Date startDate, Date endDate, Integer medicalId,
+						 Double qty, Integer unitID, Integer freqInDay, Integer freqInPeriod, String note, Integer notifyInt,
+						 Integer smsInt) {
 		this.therapyID = therapyID;
-		this.patID = patID;
+		this.patient = patient;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.medicalId = medicalId;
@@ -104,8 +104,8 @@ public class TherapyRowDTO {
 		return this.therapyID;
 	}
 
-	public PatientDTO getPatID() {
-		return this.patID;
+	public PatientDTO getPatient() {
+		return this.patient;
 	}
 
 	public Date getStartDate() {
@@ -152,8 +152,8 @@ public class TherapyRowDTO {
 		this.therapyID = therapyID;
 	}
 
-	public void setPatID(PatientDTO patID) {
-		this.patID = patID;
+	public void setPatient(PatientDTO patient) {
+		this.patient = patient;
 	}
 
 	public void setStartDate(Date startDate) {
