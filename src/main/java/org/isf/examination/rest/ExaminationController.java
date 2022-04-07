@@ -21,6 +21,7 @@
  */
 package org.isf.examination.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.isf.examination.dto.PatientExaminationDTO;
@@ -30,6 +31,7 @@ import org.isf.examination.model.PatientExamination;
 import org.isf.patient.manager.PatientBrowserManager;
 import org.isf.patient.model.Patient;
 import org.isf.shared.exceptions.OHAPIException;
+import org.isf.therapy.model.TherapyRow;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
 import org.isf.utils.exception.model.OHSeverityLevel;
@@ -38,14 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.swagger.annotations.Api;
 
@@ -181,4 +176,22 @@ public class ExaminationController {
             return ResponseEntity.ok(patientExaminationMapper.map2DTOList(patientExamination));
         }
     }
+
+	@DeleteMapping(value = "/examinations/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity deletePatientExamination(@PathVariable Integer id) throws OHServiceException {
+		LOGGER.info("Delete patientExamination id: {}", id);
+		PatientExamination patientExamination = examinationBrowserManager.getByID(id);
+		boolean isDeleted = false;
+		if (patientExamination != null) {
+			List<PatientExamination> patientExaminationList = new ArrayList<>();
+			patientExaminationList.add(patientExamination);
+			isDeleted = examinationBrowserManager.remove(patientExaminationList);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
+		if (!isDeleted) {
+			throw new OHAPIException(new OHExceptionMessage(null, "PatientExamination is not deleted!", OHSeverityLevel.ERROR));
+		}
+		return ResponseEntity.ok(isDeleted);
+	}
 }
