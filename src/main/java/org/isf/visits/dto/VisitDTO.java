@@ -29,8 +29,9 @@ import org.isf.patient.dto.PatientDTO;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.isf.ward.dto.WardDTO;
 
-@ApiModel(description = "Class representing a vaccine type")
+@ApiModel(description = "Class representing a patient visit")
 public class VisitDTO {
 
     private int visitID;
@@ -40,7 +41,7 @@ public class VisitDTO {
     PatientDTO patient;
 
     @NotNull
-    @ApiModelProperty(notes = "Date of the visit", position = 2)
+    @ApiModelProperty(notes = "Date of the visit", example="2022-04-01T12:08:56.235-07:00", position = 2)
     private GregorianCalendar date;
 
     @ApiModelProperty(notes = "Note of the visit", position = 3)
@@ -48,6 +49,9 @@ public class VisitDTO {
 
     @ApiModelProperty(notes = "Sms of the visit", position = 4)
     private boolean sms;
+
+	@ApiModelProperty(notes = "Ward of the visit", position = 5)
+	private WardDTO ward;
 
     @ApiModelProperty(hidden= true)
     public int getVisitID() {
@@ -90,13 +94,22 @@ public class VisitDTO {
 		this.sms = sms;
 	}
 
-  @Override
+	public WardDTO getWard() {
+		return ward;
+	}
+
+	public void setWard(WardDTO ward) {
+		this.ward = ward;
+	}
+
+	@Override
 	public String toString() {
 		return "VisitDTO{" +
                 ", patient=" + patient +
                 ", date=" + date +
                 ", note='" + note + '\'' +
                 ", sms=" + sms +
+				", ward=" + ward +
                 '}';
   }
 }

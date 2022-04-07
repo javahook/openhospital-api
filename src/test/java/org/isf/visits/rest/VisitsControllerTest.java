@@ -108,7 +108,7 @@ public class VisitsControllerTest {
 		int id = 1;
 		VisitDTO body = visitMapper.map2DTO(VisitHelper.setup(id));
 
-		when(visitManagerMock.newVisit(visitMapper.map2Model(body)))
+		when(visitManagerMock.saveVisit(visitMapper.map2Model(body)))
 				.thenReturn(visitMapper.map2Model(body));
 
 		MvcResult result = this.mockMvc
