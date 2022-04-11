@@ -61,8 +61,8 @@ public class AdmissionDTO {
 	@ApiModelProperty(notes = "a progr. in year for each ward", example = "1", position = 5)
 	private int yProg;
 
-	@ApiModelProperty(notes = "patient", position = 6)
-	private PatientDTO patient;
+	@ApiModelProperty(notes = "patientCode", position = 6)
+	private Integer patientCode;
 
 	@NotNull
 	@ApiModelProperty(notes = "admission date", position = 7)
@@ -167,8 +167,8 @@ public class AdmissionDTO {
 		return this.yProg;
 	}
 
-	public PatientDTO getPatient() {
-		return this.patient;
+	public Integer getPatientCode() {
+		return this.patientCode;
 	}
 
 	public Date getAdmDate() {
@@ -301,8 +301,8 @@ public class AdmissionDTO {
 		this.yProg = yProg;
 	}
 
-	public void setPatient(PatientDTO patient) {
-		this.patient = patient;
+	public void setPatientCode(Integer patientCode) {
+		this.patientCode = patientCode;
 	}
 
 	public void setAdmDate(Date admDate) {

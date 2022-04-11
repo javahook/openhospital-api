@@ -38,6 +38,8 @@ import org.isf.medicalstockward.mapper.MedicalWardMapper;
 import org.isf.medicalstockward.mapper.MovementWardMapper;
 import org.isf.medicalstockward.model.MedicalWard;
 import org.isf.medicalstockward.model.MovementWard;
+import org.isf.patient.manager.PatientBrowserManager;
+import org.isf.patient.model.Patient;
 import org.isf.shared.exceptions.OHAPIException;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
@@ -79,6 +81,9 @@ public class MedicalStockWardController {
 	
 	@Autowired
 	private WardBrowserManager wardManager;
+
+	@Autowired
+	private PatientBrowserManager patientBrowserManager;
 	
 	/**
 	 * Gets all the {@link MedicalWard}s associated to the specified ward.
@@ -213,6 +218,13 @@ public class MedicalStockWardController {
 	@PostMapping(value = "/medicalstockward/movements", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> newMovementWard(@Valid @RequestBody MovementWardDTO newMovementDTO) throws OHServiceException {
 		MovementWard newMovement = movementWardMapper.map2Model(newMovementDTO);
+		if (newMovementDTO.getPatientCode() != null) {
+			Patient patient = patientBrowserManager.getPatientById(newMovementDTO.getPatientCode());
+			if (patient == null) {
+				throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
+			}
+			newMovement.setPatient(patient);
+		}
 		movWardBrowserManager.newMovementWard(newMovement);
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
 	}
@@ -226,7 +238,17 @@ public class MedicalStockWardController {
 	@PostMapping(value = "/medicalstockward/movements/all", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> newMovementWard(@Valid @RequestBody List<MovementWardDTO> newMovementDTOs) throws OHServiceException {
 		ArrayList<MovementWard> newMovements = new ArrayList<>();
-		newMovements.addAll(movementWardMapper.map2ModelList(newMovementDTOs));
+		for (MovementWardDTO newMovementDTO : newMovementDTOs) {
+			MovementWard newMovement = movementWardMapper.map2Model(newMovementDTO);
+			if (newMovementDTO.getPatientCode() != null) {
+				Patient patient = patientBrowserManager.getPatientById(newMovementDTO.getPatientCode());
+				if (patient == null) {
+					throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
+				}
+				newMovement.setPatient(patient);
+			}
+			newMovements.add(newMovement);
+		}
 		movWardBrowserManager.newMovementWard(newMovements);
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
 	}
@@ -243,7 +265,15 @@ public class MedicalStockWardController {
 		boolean isPresent = movWardBrowserManager.getMovementWard().stream().anyMatch(mov -> mov.getCode() == movementWard.getCode());
 		if (!isPresent) {
 			throw new OHAPIException(new OHExceptionMessage(null, "Movement ward not found!", OHSeverityLevel.ERROR));
-		} 
+		}
+
+		if (movementWardDTO.getPatientCode() != null) {
+			Patient patient = patientBrowserManager.getPatientById(movementWardDTO.getPatientCode());
+			if (patient == null) {
+				throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
+			}
+			movementWard.setPatient(patient);
+		}
 		
 		boolean isUpdated = movWardBrowserManager.updateMovementWard(movementWard);
 		if (!isUpdated) {

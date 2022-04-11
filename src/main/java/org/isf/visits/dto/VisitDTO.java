@@ -37,8 +37,8 @@ public class VisitDTO {
     private int visitID;
 
     @NotNull
-    @ApiModelProperty(notes = "Patient related to visitor", position = 1)
-    PatientDTO patient;
+    @ApiModelProperty(notes = "PatientCode related to visitor", position = 1)
+    private Integer patientCode;
 
     @NotNull
     @ApiModelProperty(notes = "Date of the visit", example="2022-04-01T12:08:56.235-07:00", position = 2)
@@ -58,8 +58,8 @@ public class VisitDTO {
         return visitID;
     }
 
-	public PatientDTO getPatient() {
-		return this.patient;
+	public Integer getPatientCode() {
+		return this.patientCode;
 	}
 
 	public GregorianCalendar getDate() {
@@ -78,8 +78,8 @@ public class VisitDTO {
 		this.visitID = visitID;
 	}
 
-	public void setPatient(PatientDTO patient) {
-		this.patient = patient;
+	public void setPatientCode(Integer patientCode) {
+		this.patientCode = patientCode;
 	}
 
 	public void setDate(GregorianCalendar date) {
@@ -105,7 +105,7 @@ public class VisitDTO {
 	@Override
 	public String toString() {
 		return "VisitDTO{" +
-                ", patient=" + patient +
+                ", patientCode=" + patientCode +
                 ", date=" + date +
                 ", note='" + note + '\'' +
                 ", sms=" + sms +

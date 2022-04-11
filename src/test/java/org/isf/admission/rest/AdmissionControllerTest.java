@@ -310,7 +310,7 @@ public class AdmissionControllerTest {
 		Integer id = 1;
 		AdmissionDTO body = AdmissionHelper.setup(admissionMapper);
 		Integer code = 10;
-		body.getPatient().setCode(code);
+		body.setPatientCode(code);
 
 		Admission newAdmission = admissionMapper.map2Model(body);
 
@@ -327,10 +327,10 @@ public class AdmissionControllerTest {
 
 		Patient patient = PatientHelper.setup();
 		patient.setCode(code);
-		when(patientManagerMock.getPatientById(body.getPatient().getCode()))
+		when(patientManagerMock.getPatientById(body.getPatientCode()))
 				.thenReturn(patient);
 
-		when(patientManagerMock.getPatientById(body.getPatient().getCode()))
+		when(patientManagerMock.getPatientById(body.getPatientCode()))
 				.thenReturn(patient);
 
 		ArrayList<Disease> diseaseList = DiseaseHelper.setupDiseaseList(3);
@@ -364,7 +364,7 @@ public class AdmissionControllerTest {
 
 		AdmissionDTO body = AdmissionHelper.setup(admissionMapper);
 		Integer code = 10;
-		body.getPatient().setCode(code);
+		body.setPatientCode(code);
 
 		Admission old = admissionMapper.map2Model(body);
 		Admission update = admissionMapper.map2Model(body);
@@ -382,10 +382,10 @@ public class AdmissionControllerTest {
 
 		Patient patient = PatientHelper.setup();
 		patient.setCode(code);
-		when(patientManagerMock.getPatientById(body.getPatient().getCode()))
+		when(patientManagerMock.getPatientById(body.getPatientCode()))
 				.thenReturn(patient);
 
-		when(patientManagerMock.getPatientById(body.getPatient().getCode()))
+		when(patientManagerMock.getPatientById(body.getPatientCode()))
 				.thenReturn(patient);
 
 		ArrayList<Disease> diseaseList = DiseaseHelper.setupDiseaseList(3);

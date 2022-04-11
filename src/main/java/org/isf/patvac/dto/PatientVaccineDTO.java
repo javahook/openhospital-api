@@ -45,8 +45,8 @@ public class PatientVaccineDTO
 	private Date vaccineDate;
 
 	@NotNull
-	@ApiModelProperty(notes = "the patient to be vaccine", position = 3)
-	private PatientDTO patient;
+	@ApiModelProperty(notes = "the patientCode to be vaccined", position = 3)
+	private Integer patientCode;
 
 	@NotNull
 	@ApiModelProperty(notes = "the vaccine", position = 4)
@@ -78,8 +78,8 @@ public class PatientVaccineDTO
 		return this.vaccineDate;
 	}
 
-	public PatientDTO getPatient() {
-		return this.patient;
+	public Integer getPatientCode() {
+		return this.patientCode;
 	}
 
 	public VaccineDTO getVaccine() {
@@ -98,8 +98,8 @@ public class PatientVaccineDTO
 		this.vaccineDate = vaccineDate;
 	}
 
-	public void setPatient(PatientDTO patient) {
-		this.patient = patient;
+	public void setPatientCode(Integer patientCode) {
+		this.patientCode = patientCode;
 	}
 
 	public void setVaccine(VaccineDTO vaccine) {

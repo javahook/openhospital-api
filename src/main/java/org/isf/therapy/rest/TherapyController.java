@@ -30,6 +30,8 @@ import org.isf.accounting.model.Bill;
 import org.isf.medical.dto.MedicalDTO;
 import org.isf.medical.mapper.MedicalMapper;
 import org.isf.medicals.model.Medical;
+import org.isf.patient.manager.PatientBrowserManager;
+import org.isf.patient.model.Patient;
 import org.isf.shared.exceptions.OHAPIException;
 import org.isf.therapy.dto.TherapyDTO;
 import org.isf.therapy.dto.TherapyRowDTO;
@@ -72,6 +74,9 @@ public class TherapyController {
 
 	@Autowired
 	private MedicalMapper medicalMapper;
+
+	@Autowired
+	private PatientBrowserManager patientBrowserManager;
 	
 	/**
 	 * Creates a new therapy for related Patient.
@@ -82,6 +87,11 @@ public class TherapyController {
 	@PostMapping(value = "/therapies", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<TherapyRowDTO> newTherapy(@RequestBody TherapyRowDTO thRowDTO) throws OHServiceException {
 		TherapyRow thRow = therapyRowMapper.map2Model(thRowDTO);
+		Patient patient = patientBrowserManager.getPatientById(thRowDTO.getPatientCode());
+		if (patient == null) {
+			throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
+		}
+		thRow.setPatient(patient);
 		thRow = manager.newTherapy(thRow);
 		return ResponseEntity.status(HttpStatus.CREATED).body(therapyRowMapper.map2DTO(thRow));
 	}
@@ -94,7 +104,18 @@ public class TherapyController {
 	 */
 	@PostMapping(value = "/therapies/replace", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> replaceTherapies(@RequestBody @Valid List<TherapyRowDTO> thRowDTOs) throws OHServiceException {
-		ArrayList<TherapyRow> therapies = (ArrayList<TherapyRow>)therapyRowMapper.map2ModelList(thRowDTOs);
+		ArrayList<TherapyRow> therapies = new ArrayList<>();
+		for (TherapyRowDTO therapyRowDTO : thRowDTOs) {
+			TherapyRow therapyRow = therapyRowMapper.map2Model(therapyRowDTO);
+			if (therapyRowDTO.getPatientCode() != null) {
+				Patient patient = patientBrowserManager.getPatientById(therapyRowDTO.getPatientCode());
+				if (patient == null) {
+					throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
+				}
+				therapyRow.setPatient(patient);
+			}
+			therapies.add(therapyRow);
+		}
 		boolean done = manager.newTherapies(therapies);
 		if(done) {
 			return ResponseEntity.status(HttpStatus.CREATED).body(done);
@@ -200,6 +221,9 @@ public class TherapyController {
 	@PostMapping(value = "/therapies/from-row", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<TherapyDTO> getTherapy(@RequestBody @Valid TherapyRowDTO thRowDTO) throws OHServiceException {
 		TherapyRow thRow = therapyRowMapper.map2Model(thRowDTO);
+		Patient patient = new Patient();
+		patient.setCode(thRowDTO.getPatientCode());
+		thRow.setPatient(patient);
 		TherapyDTO mappedTherapy = therapyMapper.map2DTO(manager.createTherapy(thRow));
 		return ResponseEntity.ok(mappedTherapy);
 	}

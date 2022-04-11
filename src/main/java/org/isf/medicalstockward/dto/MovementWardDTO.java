@@ -50,8 +50,8 @@ public class MovementWardDTO {
 	@ApiModelProperty(notes="Indicates if the movement is associated to a patient or no ", example="false", position = 4)
 	private boolean isPatient;
 	
-	@ApiModelProperty(notes="The patient in case the movement is associated to a patient", position = 5)
-	private PatientDTO patient;
+	@ApiModelProperty(notes="The patientCode in case the movement is associated to a patient", position = 5)
+	private Integer patientCode;
 	
 	@ApiModelProperty(notes="The patient's age in case the movement is associated to a patient", example="21", position = 6)
 	private int age;
@@ -83,14 +83,14 @@ public class MovementWardDTO {
 	public MovementWardDTO() {
 	}
 
-	public MovementWardDTO(int code, WardDTO ward, Date date, boolean isPatient, PatientDTO patient, int age,
+	public MovementWardDTO(int code, WardDTO ward, Date date, boolean isPatient, Integer patientCode, int age,
 			float weight, String description, MedicalDTO medical, Double quantity, String units, WardDTO wardTo,
 			WardDTO wardFrom) {
 		this.code = code;
 		this.ward = ward;
 		this.date = date;
 		this.isPatient = isPatient;
-		this.patient = patient;
+		this.patientCode = patientCode;
 		this.age = age;
 		this.weight = weight;
 		this.description = description;
@@ -117,8 +117,8 @@ public class MovementWardDTO {
 		return this.isPatient;
 	}
 
-	public PatientDTO getPatient() {
-		return this.patient;
+	public Integer getPatientCode() {
+		return this.patientCode;
 	}
 
 	public int getAge() {
@@ -169,8 +169,8 @@ public class MovementWardDTO {
 		this.isPatient = isPatient;
 	}
 
-	public void setPatient(PatientDTO patient) {
-		this.patient = patient;
+	public void setPatientCode(Integer patientCode) {
+		this.patientCode = patientCode;
 	}
 
 	public void setAge(int age) {

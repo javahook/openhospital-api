@@ -306,8 +306,8 @@ public class AdmissionController {
 					new OHExceptionMessage(null, "Admission type field is required!", OHSeverityLevel.ERROR));
 		}
 
-		if (newAdmissionDTO.getPatient() != null && newAdmissionDTO.getPatient().getCode() != null) {
-			Patient patient = patientManager.getPatientById(newAdmissionDTO.getPatient().getCode());
+		if (newAdmissionDTO.getPatientCode() != null) {
+			Patient patient = patientManager.getPatientById(newAdmissionDTO.getPatientCode());
 			if (patient == null) {
 				throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
 			}
@@ -472,8 +472,8 @@ public class AdmissionController {
 					new OHExceptionMessage(null, "Admission type field is required!", OHSeverityLevel.ERROR));
 		}
 
-		if (updAdmissionDTO.getPatient() != null && updAdmissionDTO.getPatient().getCode() != null) {
-			Patient patient = patientManager.getPatientById(updAdmissionDTO.getPatient().getCode());
+		if (updAdmissionDTO.getPatientCode() != null) {
+			Patient patient = patientManager.getPatientById(updAdmissionDTO.getPatientCode());
 			if (patient == null) {
 				throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
 			}

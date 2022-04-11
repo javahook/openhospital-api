@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.isf.patient.manager.PatientBrowserManager;
+import org.isf.patient.model.Patient;
 import org.isf.patvac.dto.PatientVaccineDTO;
 import org.isf.patvac.manager.PatVacManager;
 import org.isf.patvac.mapper.PatVacMapper;
@@ -57,6 +59,9 @@ public class PatVacController {
 
 	@Autowired
 	protected PatVacManager patVacManager;
+
+	@Autowired
+	protected PatientBrowserManager patientBrowserManager;
 	
 	@Autowired
 	protected PatVacMapper mapper;
@@ -76,7 +81,14 @@ public class PatVacController {
 	ResponseEntity<Boolean> newPatientVaccine(@RequestBody PatientVaccineDTO patientVaccineDTO) throws OHServiceException {
 		int code = patientVaccineDTO.getCode();
 		LOGGER.info("Create patient vaccine {}", code);
-		boolean isCreated = patVacManager.newPatientVaccine(mapper.map2Model(patientVaccineDTO));
+		PatientVaccine patientVaccine = mapper.map2Model(patientVaccineDTO);
+		Patient patient = patientBrowserManager.getPatientById(patientVaccineDTO.getPatientCode());
+		if (patient == null) {
+			throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
+		}
+		patientVaccine.setPatient(patient);
+
+		boolean isCreated = patVacManager.newPatientVaccine(patientVaccine);
 		if (!isCreated) {
 			throw new OHAPIException(new OHExceptionMessage(null, "patient vaccine is not created!", OHSeverityLevel.ERROR));
 		}
@@ -93,7 +105,13 @@ public class PatVacController {
 	ResponseEntity<Integer> updatePatientVaccinet(@PathVariable Integer code, @RequestBody PatientVaccineDTO patientVaccineDTO)
 			throws OHServiceException {
 		LOGGER.info("Update patientvaccines code: {}", patientVaccineDTO.getCode());
-		boolean isUpdated = patVacManager.updatePatientVaccine(mapper.map2Model(patientVaccineDTO));
+		PatientVaccine patientVaccine = mapper.map2Model(patientVaccineDTO);
+		Patient patient = patientBrowserManager.getPatientById(patientVaccineDTO.getPatientCode());
+		if (patient == null) {
+			throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
+		}
+		patientVaccine.setPatient(patient);
+		boolean isUpdated = patVacManager.updatePatientVaccine(patientVaccine);
 		if (!isUpdated)
 			throw new OHAPIException(new OHExceptionMessage(null, "patient vaccine is not updated!", OHSeverityLevel.ERROR));
 		return ResponseEntity.ok(patientVaccineDTO.getCode());

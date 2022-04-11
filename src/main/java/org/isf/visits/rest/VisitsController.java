@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.isf.patient.manager.PatientBrowserManager;
+import org.isf.patient.model.Patient;
 import org.isf.shared.exceptions.OHAPIException;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
@@ -58,6 +60,9 @@ public class VisitsController {
     
     @Autowired
     protected VisitMapper mapper;
+
+	@Autowired
+	private PatientBrowserManager patientBrowserManager;
 
     public VisitsController(VisitManager visitManager, VisitMapper visitMapper) {
         this.visitManager = visitManager;
@@ -104,6 +109,16 @@ public class VisitsController {
 		} else {
 			throw new OHAPIException(new OHExceptionMessage(null, "Ward field is required!", OHSeverityLevel.ERROR));
 		}
+		if (newVisit.getPatientCode() != null) {
+			Patient patient = patientBrowserManager.getPatientById(newVisit.getPatientCode());
+			if (patient == null) {
+				throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
+			}
+			visit.setPatient(patient);
+		} else {
+			throw new OHAPIException(new OHExceptionMessage(null, "PatientCode field is required!", OHSeverityLevel.ERROR));
+		}
+
 		visit = visitManager.saveVisit(visit);
         return ResponseEntity.status(HttpStatus.CREATED).body(visit.getVisitID()); //TODO: verify if it's correct
     }
@@ -128,10 +143,19 @@ public class VisitsController {
 					throw new OHAPIException(new OHExceptionMessage(null, "Ward not found!", OHSeverityLevel.ERROR));
 				}
 				visit.setWard(ward);
-				newVisits.add(visit);
 			} else {
 				throw new OHAPIException(new OHExceptionMessage(null, "Ward field is required!", OHSeverityLevel.ERROR));
 			}
+			if (visitDTO.getPatientCode() != null) {
+				Patient patient = patientBrowserManager.getPatientById(visitDTO.getPatientCode());
+				if (patient == null) {
+					throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
+				}
+				visit.setPatient(patient);
+			} else {
+				throw new OHAPIException(new OHExceptionMessage(null, "PatientCode field is required!", OHSeverityLevel.ERROR));
+			}
+			newVisits.add(visit);
 		}
         boolean areCreated = visitManager.newVisits(newVisits);
         if (!areCreated) {
@@ -161,6 +185,15 @@ public class VisitsController {
 			updateVisitModel.setWard(ward);
 		} else {
 			throw new OHAPIException(new OHExceptionMessage(null, "Ward field is required!", OHSeverityLevel.ERROR));
+		}
+		if (updateVisit.getPatientCode() != null) {
+			Patient patient = patientBrowserManager.getPatientById(updateVisit.getPatientCode());
+			if (patient == null) {
+				throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
+			}
+			updateVisitModel.setPatient(patient);
+		} else {
+			throw new OHAPIException(new OHExceptionMessage(null, "PatientCode field is required!", OHSeverityLevel.ERROR));
 		}
 		 updateVisitModel = visitManager.saveVisit(updateVisitModel);
 		if (updateVisitModel == null) {
