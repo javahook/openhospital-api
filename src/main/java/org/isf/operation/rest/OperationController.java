@@ -37,6 +37,7 @@ import org.isf.operation.mapper.OperationRowMapper;
 import org.isf.operation.model.Operation;
 import org.isf.operation.model.OperationRow;
 import org.isf.opetype.model.OperationType;
+import org.isf.patient.manager.PatientBrowserManager;
 import org.isf.shared.exceptions.OHAPIException;
 import org.isf.utils.exception.OHServiceException;
 import org.isf.utils.exception.model.OHExceptionMessage;
@@ -71,6 +72,9 @@ public class OperationController {
 	
 	@Autowired
 	protected OperationRowBrowserManager operationRowManager;
+
+	@Autowired
+	protected PatientBrowserManager patientManager;
 	
 	@Autowired
 	protected OperationMapper mapper;
@@ -264,7 +268,7 @@ public class OperationController {
 	 * @return {@link List} of {@link OperationRow} or NO_CONTENT if there is no data found.
 	 * @throws OHServiceException
 	 */
-	@PostMapping(value = "/operations/rows/search/opd", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/operations/rows/search/opd", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<OperationRowDTO>> getOperationRowsByOpd(@RequestBody OpdDTO opdDTO) throws OHServiceException {
 		LOGGER.info("Get operations row for provided opd");
 		List<OperationRow> operationRows = operationRowManager.getOperationRowByOpd(opdMapper.map2Model(opdDTO));
@@ -292,6 +296,23 @@ public class OperationController {
 			throw new OHAPIException(new OHExceptionMessage(null, "operation row is not deleted!", OHSeverityLevel.ERROR));
 		}
 		return ResponseEntity.ok(isDeleted);
+	}
+
+	/**
+	 * Get {@link OperationRow}s for specified patient code.
+	 * @return {@link List} of {@link OperationRow} or NO_CONTENT if there is no data found.
+	 * @throws OHServiceException
+	 */
+	@GetMapping(value = "/operations/rows/search/patient", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<OperationRowDTO>> getOperationRowsByPatient(@RequestParam("patientCode") int patientCode) throws OHServiceException {
+		LOGGER.info("Get operations row for provided patient code: " + patientCode);
+		List<OperationRow> operationRows = operationRowManager.getOperationRowByPatient(patientCode);
+		List<OperationRowDTO> operationRowDTOs = opRowMapper.map2DTOList(operationRows);
+		if (operationRowDTOs.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(operationRowDTOs);
+		} else {
+			return ResponseEntity.ok(operationRowDTOs);
+		}
 	}
 
 	
