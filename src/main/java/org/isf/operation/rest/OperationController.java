@@ -315,6 +315,18 @@ public class OperationController {
 		}
 	}
 
-	
+	@DeleteMapping(value = "/operations/rows/patient/{patientCode}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Boolean> deleteOperationRowsByPatient(@PathVariable int patientCode) throws OHServiceException {
+		LOGGER.info("Delete operation rows patient code: {}", patientCode);
+		List<OperationRow> operationRows = operationRowManager.getOperationRowByPatient(patientCode);
+		boolean isDeleted = operationRowManager.deleteOperationRows(operationRows);
+		if (!isDeleted) {
+			throw new OHAPIException(new OHExceptionMessage(null, "operation rows are not deleted!", OHSeverityLevel.ERROR));
+		}
+		return ResponseEntity.ok(isDeleted);
+	}
+
+
+
 
 }
