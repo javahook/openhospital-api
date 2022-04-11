@@ -106,7 +106,7 @@ public class LaboratoryController {
             throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
         }
 
-        Exam exam = examManager.getExams().stream().filter(e -> e.getCode().equals(laboratoryDTO.getExam().getCode())).findFirst().orElse(null);
+        Exam exam = examManager.getExams().stream().filter(e -> e.getCode().equals(laboratoryDTO.getExamCode())).findFirst().orElse(null);
         if (exam == null) {
             throw new OHAPIException(new OHExceptionMessage(null, "Exam not found!", OHSeverityLevel.ERROR));
         }
@@ -142,7 +142,7 @@ public class LaboratoryController {
                 throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
             }
 
-            Exam exam = examManager.getExams().stream().filter(e -> e.getCode().equals(laboratoryDTO.getExam().getCode())).findFirst().orElse(null);
+            Exam exam = examManager.getExams().stream().filter(e -> e.getCode().equals(laboratoryDTO.getExamCode())).findFirst().orElse(null);
             if (exam == null) {
                 throw new OHAPIException(new OHExceptionMessage(null, "Exam not found!", OHSeverityLevel.ERROR));
             }
@@ -190,7 +190,7 @@ public class LaboratoryController {
             throw new OHAPIException(new OHExceptionMessage(null, "Patient not found!", OHSeverityLevel.ERROR));
         }
 
-        Exam exam = examManager.getExams().stream().filter(e -> e.getCode().equals(laboratoryDTO.getExam().getCode())).findFirst().orElse(null);
+        Exam exam = examManager.getExams().stream().filter(e -> e.getCode().equals(laboratoryDTO.getExamCode())).findFirst().orElse(null);
         if (exam == null) {
             throw new OHAPIException(new OHExceptionMessage(null, "Exam not found!", OHSeverityLevel.ERROR));
         }
