@@ -194,8 +194,11 @@ public class LaboratoryController {
         if (exam == null) {
             throw new OHAPIException(new OHExceptionMessage(null, "Exam not found!", OHSeverityLevel.ERROR));
         }
-
+       
         Laboratory labToInsert = laboratoryMapper.map2Model(laboratoryDTO);
+        Laboratory lab = laboratoryManager.getLaboratory(labToInsert.getCode());
+        
+        labToInsert.setLock(lab.getLock());
         labToInsert.setExam(exam);
         labToInsert.setPatient(patient);
 

@@ -93,7 +93,11 @@ public class PatVacController {
 	ResponseEntity<Integer> updatePatientVaccinet(@PathVariable Integer code, @RequestBody PatientVaccineDTO patientVaccineDTO)
 			throws OHServiceException {
 		LOGGER.info("Update patientvaccines code: {}", patientVaccineDTO.getCode());
-		boolean isUpdated = patVacManager.updatePatientVaccine(mapper.map2Model(patientVaccineDTO));
+		
+		PatientVaccine pvaccine = mapper.map2Model(patientVaccineDTO);
+		PatientVaccine pv = patVacManager.getPatientVaccine(patientVaccineDTO.getCode());
+		pvaccine.setLock(pv.getLock());
+		boolean isUpdated = patVacManager.updatePatientVaccine(pvaccine);
 		if (!isUpdated)
 			throw new OHAPIException(new OHExceptionMessage(null, "patient vaccine is not updated!", OHSeverityLevel.ERROR));
 		return ResponseEntity.ok(patientVaccineDTO.getCode());

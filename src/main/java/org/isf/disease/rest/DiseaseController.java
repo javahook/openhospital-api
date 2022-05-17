@@ -222,7 +222,7 @@ public class DiseaseController {
 	 * @throws OHServiceException
 	 */
 	@GetMapping(value = "/diseases/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<DiseaseDTO> getDiseaseByCode(@PathVariable("code") Integer code) throws OHServiceException {
+	public ResponseEntity<DiseaseDTO> getDiseaseByCode(@PathVariable("code") String code) throws OHServiceException {
         LOGGER.info("Get disease by code");
 	    Disease disease = diseaseManager.getDiseaseByCode(code);
 	    if(disease != null) {
@@ -263,10 +263,12 @@ public class DiseaseController {
 	@PutMapping(value="/diseases", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<DiseaseDTO> updateDisease(@Valid @RequestBody DiseaseDTO diseaseDTO) throws OHServiceException {
 		Disease disease = mapper.map2Model(diseaseDTO);
+		Disease diseaseup = diseaseManager.getDiseaseByCode(diseaseDTO.getCode());
+		
 		if (!diseaseManager.isCodePresent(disease.getCode())) {
 			throw new OHAPIException(new OHExceptionMessage(null, "disease not found", OHSeverityLevel.ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+		disease.setLock(diseaseup.getLock());
 		if (diseaseManager.updateDisease(disease) != null) {
         	return ResponseEntity.ok(diseaseDTO);
         } else {
@@ -281,7 +283,7 @@ public class DiseaseController {
 	 * @throws OHServiceException
 	 */
 	@DeleteMapping(value = "/diseases/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Map<String, Boolean>> deleteDisease(@PathVariable("code") Integer code) throws OHServiceException {
+	public ResponseEntity<Map<String, Boolean>> deleteDisease(@PathVariable("code") String code) throws OHServiceException {
 		Disease disease = diseaseManager.getDiseaseByCode(code);
 		if(disease != null) {
 			Map<String, Boolean> result = new HashMap<>();

@@ -104,6 +104,9 @@ public class ExamController {
 
         Exam exam = examMapper.map2Model(updateExam);
         exam.setExamtype(examType);
+        Exam ex = examManager.getExams(exam.getDescription()).stream().filter(et-> updateExam.getCode().equals(et.getCode())).findFirst().orElse(null);
+        exam.setLock(ex.getLock());
+        
         if (!examManager.updateExam(exam)) {
             throw new OHAPIException(new OHExceptionMessage(null, "Exam is not updated!", OHSeverityLevel.ERROR));
         }

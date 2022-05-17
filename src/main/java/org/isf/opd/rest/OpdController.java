@@ -115,6 +115,9 @@ public class OpdController {
 		}
 
 		Opd opdToUpdate = mapper.map2Model(opdDTO);
+		Opd opd = opdManager.getOpdByCode(opdDTO.getCode());
+		
+		opdToUpdate.setLock(opd.getLock());
 		opdToUpdate.setPatient(patient);
 
 		Opd updatedOpd = opdManager.updateOpd(opdToUpdate);

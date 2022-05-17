@@ -45,6 +45,8 @@ import org.isf.admission.model.AdmittedPatient;
 import org.isf.admtype.data.AdmissionTypeDTOHelper;
 import org.isf.admtype.model.AdmissionType;
 import org.isf.disctype.data.DischargeTypeHelper;
+import org.isf.disctype.manager.DischargeTypeBrowserManager;
+import org.isf.disctype.mapper.DischargeTypeMapper;
 import org.isf.disctype.model.DischargeType;
 import org.isf.disease.data.DiseaseHelper;
 import org.isf.disease.manager.DiseaseBrowserManager;
@@ -112,6 +114,12 @@ public class AdmissionControllerTest {
 
 	@Autowired
 	private AdmittedPatientMapper admittedMapper = new AdmittedPatientMapper();
+	
+	@Autowired
+	private DischargeTypeBrowserManager dischargeManagerMock;
+
+	@Autowired
+	private DischargeTypeMapper dischargeMapperMock;
 
 	private MockMvc mockMvc;
 
@@ -122,7 +130,8 @@ public class AdmissionControllerTest {
 				.standaloneSetup(new AdmissionController(admissionManagerMock, patientManagerMock, wardManagerMock,
 						diseaseManagerMock, operationManagerMock, pregTraitTypeManagerMock,
 						dlvrTypeManagerMock, dlvrrestTypeManagerMock, admissionMapper,
-						admittedMapper))
+						admittedMapper, dischargeManagerMock, 
+						 dischargeMapperMock))
 				.setControllerAdvice(new OHResponseEntityExceptionHandler())
 				.build();
 		ModelMapper modelMapper = new ModelMapper();
