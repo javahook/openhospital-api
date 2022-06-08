@@ -33,7 +33,7 @@ public class LoginController {
 	JwtUtils jwtUtils;
 	
 	
-	@PostMapping(value = "/auth/login", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/auth/logins", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
